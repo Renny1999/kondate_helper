@@ -1,9 +1,14 @@
-package com.example.rhong.myapplication;
+package com.example.rhong.externaldb;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+/**
+ * Created by rhong on 2/20/18.
+ */
 
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
@@ -26,4 +31,24 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }
+
+    public boolean addData(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+
+        long result = db.insert("userfoodlist", null, contentValues);
+        db.close();
+        if(result == -1){
+            return false;
+        }
+        return true;
+    }
+
+    public Cursor getListContents(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM userfoodlist", null);
+        return data;
+    }
+
 }
